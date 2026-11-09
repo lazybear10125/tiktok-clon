@@ -1,0 +1,541 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: var(--z-modal-backdrop);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 200ms ease-out;
+}
+
+.modal {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  background: var(--bg-primary);
+  overflow: hidden;
+}
+
+/* Left Pane */
+.videoPane {
+  flex: 1;
+  position: relative;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.blurBackdrop {
+  position: absolute;
+  inset: -20px;
+  background-size: cover;
+  background-position: center;
+  filter: blur(40px) brightness(0.3);
+  opacity: 0.6;
+}
+
+.closeBtn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 20;
+  transition: all var(--transition-fast);
+}
+
+.closeBtn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.08);
+}
+
+.videoWrapper {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  height: calc(100vh - 80px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5;
+}
+
+.videoPlayer {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.centerPlayIcon {
+  position: absolute;
+  color: #fff;
+  opacity: 0.8;
+  animation: scaleUp 150ms ease-out;
+}
+
+.playerControlBar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 24px;
+  z-index: 10;
+}
+
+.ctrlBtn {
+  color: #fff;
+  cursor: pointer;
+}
+
+.progressBarWrapper {
+  flex: 1;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.progressBar {
+  height: 4px;
+  background: var(--primary);
+  border-radius: 2px;
+  transition: height 150ms ease;
+}
+
+.progressBarWrapper:hover .progressBar {
+  height: 6px;
+}
+
+.speedWrapper {
+  position: relative;
+}
+
+.speedBtn {
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.speedMenu {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  right: 0;
+  background: #222;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 30;
+}
+
+.speedChoice {
+  padding: 8px 16px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+}
+
+.speedChoice:hover, .speedChoice.speedActive {
+  background: var(--primary);
+}
+
+/* Right Pane */
+.infoPane {
+  width: 520px;
+  background: var(--bg-primary);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border-left: 1px solid var(--border-color);
+}
+
+.authorHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 20px 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.authorLink {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.authorAvatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.authorText {
+  display: flex;
+  flex-direction: column;
+}
+
+.nicknameRow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.nicknameRow strong {
+  font-size: 16px;
+  color: var(--text-primary);
+}
+
+.verifiedIcon {
+  color: #20D5EC;
+}
+
+.username {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.followBtn {
+  height: 36px;
+  padding: 0 20px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.followBtn.followed {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.captionSection {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.captionText {
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+
+.musicTag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.statsBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+}
+
+.leftStats {
+  display: flex;
+  gap: 18px;
+}
+
+.statBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.activeHeart {
+  color: var(--primary);
+}
+
+.activeBookmark {
+  color: #FACE15;
+}
+
+.copyLinkBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.copyLinkBtn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+/* Comments List */
+.commentsList {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.emptyComments {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.emptyIcon {
+  color: var(--text-tertiary);
+  margin-bottom: 8px;
+}
+
+.emptyComments p {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.emptyComments span {
+  font-size: 13px;
+}
+
+.commentItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.cAvatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.cBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.cTop {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+
+.cTop strong {
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.cTop span {
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.cText {
+  font-size: 14px;
+  color: var(--text-primary);
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+
+.cActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.replyBtn {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.replyBtn:hover {
+  text-decoration: underline;
+  color: var(--text-primary);
+}
+
+.deleteBtn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--text-tertiary);
+  cursor: pointer;
+}
+
+.deleteBtn:hover {
+  color: var(--primary);
+}
+
+.cLikeBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px;
+  font-size: 11px;
+}
+
+.repliesList {
+  margin-top: 8px;
+  padding-left: 12px;
+  border-left: 2px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.replyItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.rAvatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.rBody {
+  flex: 1;
+}
+
+/* Quick Emojis */
+.quickEmojisBar {
+  display: flex;
+  gap: 8px;
+  padding: 8px 20px;
+  border-top: 1px solid var(--border-subtle);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.emojiPickBtn {
+  font-size: 18px;
+  padding: 4px 6px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: transform var(--transition-fast);
+}
+
+.emojiPickBtn:hover {
+  transform: scale(1.2);
+}
+
+.replyingBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 20px;
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  font-size: 13px;
+}
+
+.replyingText {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-secondary);
+}
+
+.cancelReplyBtn {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--primary);
+  cursor: pointer;
+}
+
+/* Comment Form */
+.commentForm {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-primary);
+}
+
+.commentInput {
+  flex: 1;
+  height: 40px;
+  background: var(--bg-input);
+  border-radius: var(--radius-full);
+  padding: 0 16px;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.commentPostBtn {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--primary);
+  cursor: pointer;
+  padding: 8px 12px;
+}
+
+.commentPostBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+@media (max-width: 900px) {
+  .modal {
+    flex-direction: column;
+  }
+  .infoPane {
+    width: 100%;
+    height: 50vh;
+  }
+}

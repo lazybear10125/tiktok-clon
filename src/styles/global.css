@@ -80,6 +80,27 @@ img, video {
   background: var(--text-tertiary);
 }
 
+/* Caption Tags and Mentions */
+.caption-tag,
+.caption-mention {
+  font-weight: 700;
+  color: var(--text-primary);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.caption-tag:hover,
+.caption-mention:hover {
+  text-decoration: underline;
+  color: var(--primary);
+}
+
+[data-theme="dark"] .caption-tag:hover,
+[data-theme="dark"] .caption-mention:hover {
+  color: var(--secondary);
+}
+
 /* Layout Utilities (Auto Layout) */
 .flex {
   display: flex;

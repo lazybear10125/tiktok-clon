@@ -23,6 +23,7 @@ export default function Header() {
     toggleTheme,
     currentUser,
     openAuthModal,
+    openEditProfile,
     notifications,
     showToast,
   } = useApp();
@@ -164,11 +165,11 @@ export default function Header() {
                     className={styles.dropdownItem}
                     onClick={() => {
                       setIsUserMenuOpen(false);
-                      showToast('Đang mở cài đặt...');
+                      openEditProfile();
                     }}
                   >
                     <Settings size={18} />
-                    <span>Cài đặt</span>
+                    <span>Sửa hồ sơ & Cài đặt</span>
                   </button>
 
                   <button

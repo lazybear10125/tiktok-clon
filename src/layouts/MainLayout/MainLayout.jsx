@@ -4,6 +4,8 @@ import Header from '../../components/Header/Header';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import BottomNav from '../../components/BottomNav/BottomNav';
 import AuthModal from '../../components/AuthModal/AuthModal';
+import EditProfileModal from '../../components/EditProfileModal/EditProfileModal';
+import VideoDetailModal from '../../components/VideoDetailModal/VideoDetailModal';
 import Toast from '../../components/Toast/Toast';
 import styles from './MainLayout.module.css';
 
@@ -19,6 +21,8 @@ export default function MainLayout() {
       </div>
       <BottomNav />
       <AuthModal />
+      <EditProfileModal />
+      <VideoDetailModal />
       <Toast />
     </div>
   );

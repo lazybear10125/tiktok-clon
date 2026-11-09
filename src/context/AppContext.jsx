@@ -31,8 +31,18 @@ export function AppProvider({ children }) {
       followingCount: 86,
       likesCount: 12500,
       isVerified: false,
+      website: 'https://github.com/lazybear10125/tiktok-clon',
     };
   });
+
+  const updateCurrentUser = (updatedFields) => {
+    setCurrentUser(prev => {
+      const updated = { ...prev, ...updatedFields };
+      localStorage.setItem('tiktok_current_user', JSON.stringify(updated));
+      return updated;
+    });
+    showToast('Đã lưu thông tin hồ sơ!');
+  };
 
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authModalMode, setAuthModalMode] = useState('login'); // 'login' | 'signup'
@@ -46,13 +56,22 @@ export function AppProvider({ children }) {
     setIsAuthModalOpen(false);
   };
 
-  // 3. Followed Users State (stored in localStorage)
+  // Edit Profile Modal
+  const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+  const openEditProfile = () => setIsEditProfileOpen(true);
+  const closeEditProfile = () => setIsEditProfileOpen(false);
+
+  // Fullscreen Video Detail Modal State
+  const [activeVideoModal, setActiveVideoModal] = useState(null);
+  const openVideoModal = (video) => setActiveVideoModal(video);
+  const closeVideoModal = () => setActiveVideoModal(null);
+
+  // 3. Followed Users State
   const [followedUserIds, setFollowedUserIds] = useState(() => {
     const saved = localStorage.getItem('tiktok_followed_users');
     if (saved) {
       try { return JSON.parse(saved); } catch (e) { /* ignore */ }
     }
-    // Initial followed users from mock data
     return mockUsers.filter(u => u.isFollowed).map(u => u.id);
   });
 
@@ -176,6 +195,21 @@ export function AppProvider({ children }) {
     showToast('Đã đăng bình luận');
   };
 
+  const deleteComment = (videoId, commentId) => {
+    const vid = Number(videoId);
+    setCommentsMap(prev => {
+      const currentList = prev[vid] || [];
+      const updatedList = currentList
+        .filter(c => c.id !== commentId)
+        .map(c => ({
+          ...c,
+          replies: (c.replies || []).filter(r => r.id !== commentId),
+        }));
+      return { ...prev, [vid]: updatedList };
+    });
+    showToast('Đã xóa bình luận');
+  };
+
   const toggleCommentLike = (videoId, commentId) => {
     const vid = Number(videoId);
     setCommentsMap(prev => {
@@ -253,7 +287,7 @@ export function AppProvider({ children }) {
     setNotifications(prev => prev.map(n => (n.id === id ? { ...n, isRead: true } : n)));
   };
 
-  // 9. Uploaded Videos State (persisted so users can upload and see their videos!)
+  // 9. Uploaded Videos State
   const [uploadedVideos, setUploadedVideos] = useState(() => {
     const saved = localStorage.getItem('tiktok_uploaded_videos');
     if (saved) {
@@ -319,10 +353,17 @@ export function AppProvider({ children }) {
         toggleTheme,
         currentUser,
         setCurrentUser,
+        updateCurrentUser,
         isAuthModalOpen,
         authModalMode,
         openAuthModal,
         closeAuthModal,
+        isEditProfileOpen,
+        openEditProfile,
+        closeEditProfile,
+        activeVideoModal,
+        openVideoModal,
+        closeVideoModal,
         followedUserIds,
         toggleFollow,
         isUserFollowed,
@@ -334,6 +375,7 @@ export function AppProvider({ children }) {
         isVideoFavorited,
         commentsMap,
         addComment,
+        deleteComment,
         toggleCommentLike,
         searchHistory,
         addSearchQuery,

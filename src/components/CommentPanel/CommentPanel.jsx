@@ -1,21 +1,25 @@
 import React, { useState } from 'react';
-import { X, Heart, MessageCircle, Send, Smile, CornerDownRight } from 'lucide-react';
+import { X, Heart, MessageCircle, Send, Smile, CornerDownRight, Trash2 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { formatNumber, formatTimeAgo } from '../../utils/formatters';
 import styles from './CommentPanel.module.css';
+
+const quickEmojis = ['😂', '❤️', '🔥', '👏', '💯', '😍', '🥺', '🎉', '🚀', '✨'];
 
 export default function CommentPanel({ videoId, onClose }) {
   const {
     currentUser,
     commentsMap,
     addComment,
+    deleteComment,
     toggleCommentLike,
     getUserById,
     showToast,
   } = useApp();
 
   const [inputText, setInputText] = useState('');
-  const [replyingTo, setReplyingTo] = useState(null); // comment object
+  const [replyingTo, setReplyingTo] = useState(null);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const comments = commentsMap[videoId] || [];
 
   const handleSubmit = (e) => {
@@ -55,6 +59,7 @@ export default function CommentPanel({ videoId, onClose }) {
         ) : (
           comments.map((comment) => {
             const author = getUserById(comment.userId);
+            const isMyComment = currentUser && currentUser.id === comment.userId;
             return (
               <div key={comment.id} className={styles.commentItem}>
                 <div className={styles.avatarCol}>
@@ -82,6 +87,15 @@ export default function CommentPanel({ videoId, onClose }) {
                     >
                       Trả lời
                     </button>
+                    {isMyComment && (
+                      <button
+                        className={styles.deleteBtn}
+                        onClick={() => deleteComment(videoId, comment.id)}
+                      >
+                        <Trash2 size={12} />
+                        <span>Xóa</span>
+                      </button>
+                    )}
                   </div>
 
                   {/* Nested Replies */}
@@ -89,6 +103,7 @@ export default function CommentPanel({ videoId, onClose }) {
                     <div className={styles.repliesList}>
                       {comment.replies.map((reply) => {
                         const replyAuthor = getUserById(reply.userId);
+                        const isMyReply = currentUser && currentUser.id === reply.userId;
                         return (
                           <div key={reply.id} className={styles.replyItem}>
                             <img
@@ -106,6 +121,15 @@ export default function CommentPanel({ videoId, onClose }) {
                                 </span>
                               </div>
                               <p className={styles.commentText}>{reply.text}</p>
+                              {isMyReply && (
+                                <button
+                                  className={styles.deleteBtn}
+                                  onClick={() => deleteComment(videoId, reply.id)}
+                                >
+                                  <Trash2 size={11} />
+                                  <span>Xóa</span>
+                                </button>
+                              )}
                             </div>
                             <button
                               className={`${styles.likeBtn} ${reply.isLiked ? styles.liked : ''}`}
@@ -144,6 +168,20 @@ export default function CommentPanel({ videoId, onClose }) {
         )}
       </div>
 
+      {/* Quick Emojis Bar */}
+      <div className={styles.emojiRow}>
+        {quickEmojis.map((emoji) => (
+          <button
+            key={emoji}
+            type="button"
+            className={styles.emojiBtn}
+            onClick={() => setInputText(prev => prev + emoji)}
+          >
+            {emoji}
+          </button>
+        ))}
+      </div>
+
       {/* Replying Notice Banner */}
       {replyingTo && (
         <div className={styles.replyingBanner}>
@@ -179,14 +217,6 @@ export default function CommentPanel({ videoId, onClose }) {
             onChange={(e) => setInputText(e.target.value)}
             className={styles.input}
           />
-          <button
-            type="button"
-            className={styles.emojiBtn}
-            onClick={() => setInputText(prev => prev + ' ❤️')}
-            aria-label="Add emoji"
-          >
-            <Smile size={18} />
-          </button>
         </div>
         <button
           type="submit"

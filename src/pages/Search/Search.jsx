@@ -9,7 +9,7 @@ import styles from './Search.module.css';
 export default function Search() {
   const [searchParams] = useSearchParams();
   const query = searchParams.get('q') || '';
-  const { allVideos, isUserFollowed, toggleFollow, getUserById } = useApp();
+  const { allVideos, isUserFollowed, toggleFollow, getUserById, openVideoModal } = useApp();
   const [activeTab, setActiveTab] = useState('all'); // 'all' | 'accounts' | 'videos'
 
   // Filter matching accounts
@@ -116,8 +116,13 @@ export default function Search() {
               {matchingVideos.map((video) => {
                 const author = getUserById(video.userId);
                 return (
-                  <div key={video.id} className={styles.videoCard}>
-                    <Link to={`/@${author.username}`} className={styles.thumbnailWrapper}>
+                  <div
+                    key={video.id}
+                    className={styles.videoCard}
+                    onClick={() => openVideoModal(video)}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <div className={styles.thumbnailWrapper}>
                       <img src={video.coverUrl} alt={video.description} className={styles.thumbnail} />
                       <div className={styles.thumbnailOverlay}>
                         <div className={styles.viewBadge}>
@@ -125,9 +130,9 @@ export default function Search() {
                           <span>{formatNumber(video.viewsCount)}</span>
                         </div>
                       </div>
-                    </Link>
+                    </div>
                     <p className={styles.videoCaption}>{video.description}</p>
-                    <Link to={`/@${author.username}`} className={styles.authorRow}>
+                    <Link to={`/@${author.username}`} onClick={(e) => e.stopPropagation()} className={styles.authorRow}>
                       <img src={author.avatar} alt={author.nickname} className={styles.authorAvatar} />
                       <span className={styles.authorName}>{author.nickname}</span>
                     </Link>

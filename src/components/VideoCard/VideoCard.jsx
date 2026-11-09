@@ -11,11 +11,12 @@ import {
   Pause,
   Music,
   CheckCircle2,
-  Check,
-  Plus
+  Plus,
+  Maximize
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { formatNumber } from '../../utils/formatters';
+import { renderFormattedCaption } from '../../utils/captionParser';
 import styles from './VideoCard.module.css';
 
 export default function VideoCard({
@@ -32,11 +33,13 @@ export default function VideoCard({
     toggleLikeVideo,
     isVideoFavorited,
     toggleFavoriteVideo,
+    commentsMap,
     isMuted,
     toggleMute,
     volume,
     setVolume,
     showToast,
+    openVideoModal,
   } = useApp();
 
   const videoRef = useRef(null);
@@ -52,11 +55,10 @@ export default function VideoCard({
   const isLiked = isVideoLiked(video.id);
   const isFavorited = isVideoFavorited(video.id);
   const isFollowed = isUserFollowed(video.userId);
+  const currentComments = commentsMap[video.id] || [];
 
-  // Likes count dynamically adjusted based on liked state
-  const displayedLikes = isLiked
-    ? video.likesCount + 1
-    : video.likesCount;
+  const displayedLikes = isLiked ? video.likesCount + 1 : video.likesCount;
+  const totalComments = video.commentsCount + currentComments.length;
 
   // Auto play/pause when card becomes active/inactive
   useEffect(() => {
@@ -71,7 +73,6 @@ export default function VideoCard({
         playPromise
           .then(() => setIsPlaying(true))
           .catch(() => {
-            // Autoplay blocked without user interaction
             el.muted = true;
             el.play().then(() => setIsPlaying(true)).catch(() => {});
           });
@@ -90,7 +91,6 @@ export default function VideoCard({
     }
   }, [isMuted, volume]);
 
-  // Handle Play / Pause toggle
   const togglePlay = () => {
     const el = videoRef.current;
     if (!el) return;
@@ -106,7 +106,6 @@ export default function VideoCard({
     setTimeout(() => setShowPlayIndicator(false), 500);
   };
 
-  // Video time update
   const handleTimeUpdate = () => {
     if (videoRef.current) {
       setCurrentTime(videoRef.current.currentTime);
@@ -119,7 +118,6 @@ export default function VideoCard({
     }
   };
 
-  // Progress Bar seek
   const handleSeek = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const pos = (e.clientX - rect.left) / rect.width;
@@ -132,6 +130,7 @@ export default function VideoCard({
 
   // Double click on video to trigger floating heart & Like
   const handleDoubleClick = (e) => {
+    e.stopPropagation();
     if (!isLiked) {
       toggleLikeVideo(video.id);
     }
@@ -143,10 +142,20 @@ export default function VideoCard({
     setFloatingHearts(prev => [...prev, newHeart]);
     setTimeout(() => {
       setFloatingHearts(prev => prev.filter(h => h.id !== newHeart.id));
-    }, 1000);
+    }, 900);
   };
 
-  // Share action
+  const handleFullscreen = (e) => {
+    e.stopPropagation();
+    if (videoRef.current) {
+      if (videoRef.current.requestFullscreen) {
+        videoRef.current.requestFullscreen();
+      } else if (videoRef.current.webkitRequestFullscreen) {
+        videoRef.current.webkitRequestFullscreen();
+      }
+    }
+  };
+
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.origin + `/@${author.username}/video/${video.id}`);
     showToast('Đã sao chép liên kết video vào clipboard!');
@@ -154,7 +163,7 @@ export default function VideoCard({
 
   return (
     <div className={styles.videoCard}>
-      {/* Top Header on Mobile or subtle author info on wide screen */}
+      {/* Author Header */}
       <div className={styles.headerInfo}>
         <div className={styles.authorRow}>
           <Link to={`/@${author.username}`} className={styles.avatarLink}>
@@ -173,7 +182,7 @@ export default function VideoCard({
             </div>
 
             <p className={styles.captionText}>
-              {video.description}
+              {renderFormattedCaption(video.description)}
             </p>
 
             <div className={styles.musicRow}>
@@ -182,7 +191,6 @@ export default function VideoCard({
             </div>
           </div>
 
-          {/* Follow Button */}
           <button
             className={`${styles.followBtn} ${isFollowed ? styles.followed : ''}`}
             onClick={() => toggleFollow(author.id)}
@@ -194,7 +202,6 @@ export default function VideoCard({
 
       {/* Main Video Viewport & Actions Row */}
       <div className={styles.videoContentRow}>
-        {/* Video Player 9:16 Container */}
         <div
           ref={containerRef}
           className={`${styles.playerContainer} ${isCommentOpen ? styles.contracted : ''}`}
@@ -219,7 +226,7 @@ export default function VideoCard({
               className={styles.floatingHeart}
               style={{ left: h.x, top: h.y }}
             >
-              <Heart size={64} fill="#FE2C55" color="#FE2C55" />
+              <Heart size={68} fill="#FE2C55" color="#FE2C55" />
             </div>
           ))}
 
@@ -230,7 +237,7 @@ export default function VideoCard({
             </div>
           )}
 
-          {/* Top Video Overlay Controls (Play/Pause indicator & Mute/Volume) */}
+          {/* Top Video Overlay Controls */}
           <div className={styles.videoTopOverlay}>
             <div
               className={styles.volumeControlWrapper}
@@ -259,12 +266,20 @@ export default function VideoCard({
                 onClick={toggleMute}
                 aria-label="Toggle mute"
               >
-                {isMuted || volume === 0 ? <VolumeX size={20} /> : <Volume2 size={20} />}
+                {isMuted || volume === 0 ? <VolumeX size={18} /> : <Volume2 size={18} />}
               </button>
             </div>
+
+            <button
+              className={styles.overlayIconBtn}
+              onClick={handleFullscreen}
+              aria-label="Fullscreen"
+            >
+              <Maximize size={18} />
+            </button>
           </div>
 
-          {/* Bottom Video Progress Bar */}
+          {/* Bottom Progress Bar */}
           <div className={styles.progressBarWrapper} onClick={handleSeek}>
             <div
               className={styles.progressBar}
@@ -275,9 +290,8 @@ export default function VideoCard({
           </div>
         </div>
 
-        {/* Vertical Action Buttons (Right of Video) */}
+        {/* Vertical Action Buttons */}
         <div className={styles.actionButtonsCol}>
-          {/* Author Avatar with quick follow '+' */}
           <div className={styles.avatarActionItem}>
             <Link to={`/@${author.username}`} className={styles.actionAvatarLink}>
               <img src={author.avatar} alt={author.nickname} className={styles.actionAvatar} />
@@ -293,7 +307,7 @@ export default function VideoCard({
             )}
           </div>
 
-          {/* Like Button */}
+          {/* Like */}
           <div className={styles.actionItem}>
             <button
               className={`${styles.actionCircleBtn} ${isLiked ? styles.activeHeart : ''}`}
@@ -310,7 +324,7 @@ export default function VideoCard({
             <span className={styles.actionCount}>{formatNumber(displayedLikes)}</span>
           </div>
 
-          {/* Comments Button */}
+          {/* Comments */}
           <div className={styles.actionItem}>
             <button
               className={`${styles.actionCircleBtn} ${isCommentOpen ? styles.activeComment : ''}`}
@@ -319,10 +333,10 @@ export default function VideoCard({
             >
               <MessageCircle size={22} />
             </button>
-            <span className={styles.actionCount}>{formatNumber(video.commentsCount)}</span>
+            <span className={styles.actionCount}>{formatNumber(totalComments)}</span>
           </div>
 
-          {/* Favorite / Bookmark Button */}
+          {/* Bookmark */}
           <div className={styles.actionItem}>
             <button
               className={`${styles.actionCircleBtn} ${isFavorited ? styles.activeBookmark : ''}`}
@@ -340,7 +354,7 @@ export default function VideoCard({
             </span>
           </div>
 
-          {/* Share Button */}
+          {/* Share */}
           <div className={styles.actionItem}>
             <button
               className={styles.actionCircleBtn}
@@ -352,8 +366,14 @@ export default function VideoCard({
             <span className={styles.actionCount}>{formatNumber(video.sharesCount)}</span>
           </div>
 
-          {/* Rotating Vinyl Disc */}
-          <div className={styles.vinylDiscWrapper}>
+          {/* Vinyl Disc with Floating Music Notes */}
+          <div className={styles.vinylDiscWrapper} onClick={() => openVideoModal(video)}>
+            {isPlaying && (
+              <>
+                <span className={`${styles.musicNote} animate-note-1`}>♪</span>
+                <span className={`${styles.musicNote} animate-note-2`}>♫</span>
+              </>
+            )}
             <div className={`${styles.vinylDisc} ${isPlaying ? 'animate-disc-rotate' : ''}`}>
               <img src={author.avatar} alt="sound" className={styles.vinylImg} />
             </div>

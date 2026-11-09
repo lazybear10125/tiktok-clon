@@ -10,7 +10,7 @@ export default function ProfileHeader({
   onTabChange,
   counts = { videos: 0, liked: 0, favorites: 0 }
 }) {
-  const { currentUser, isUserFollowed, toggleFollow, showToast } = useApp();
+  const { currentUser, isUserFollowed, toggleFollow, showToast, openEditProfile } = useApp();
   const isMe = currentUser && currentUser.username === user.username;
   const isFollowed = isUserFollowed(user.id);
 
@@ -41,7 +41,7 @@ export default function ProfileHeader({
             {isMe ? (
               <button
                 className={styles.editBtn}
-                onClick={() => showToast('Chức năng chỉnh sửa hồ sơ đang mở!')}
+                onClick={openEditProfile}
               >
                 <Edit3 size={16} />
                 <span>Sửa hồ sơ</span>

@@ -3,15 +3,18 @@ import { Link } from 'react-router-dom';
 import { useApp } from '../../context/AppContext';
 import VideoCard from '../../components/VideoCard/VideoCard';
 import CommentPanel from '../../components/CommentPanel/CommentPanel';
-import { Users, UserPlus, CheckCircle2, ChevronUp, ChevronDown } from 'lucide-react';
+import { Users, UserPlus, CheckCircle2, ChevronUp, ChevronDown, Sparkles } from 'lucide-react';
 import { mockUsers } from '../../data/mockData';
 import styles from './Following.module.css';
 
 export default function Following() {
-  const { allVideos, isUserFollowed, toggleFollow } = useApp();
+  const { allVideos, isUserFollowed, toggleFollow, getUserById } = useApp();
   const [activeVideoIndex, setActiveVideoIndex] = useState(0);
   const [openCommentVideoId, setOpenCommentVideoId] = useState(null);
   const videoRefs = useRef([]);
+
+  // Followed creators
+  const followedCreators = mockUsers.filter(u => isUserFollowed(u.id));
 
   // Filter videos whose author is in followedUserIds
   const followingVideos = allVideos.filter((v) => isUserFollowed(v.userId));
@@ -49,7 +52,7 @@ export default function Following() {
     }
   };
 
-  // If user hasn't followed anyone or no videos from followed accounts
+  // If user hasn't followed anyone
   if (followingVideos.length === 0) {
     return (
       <div className={styles.emptyContainer}>
@@ -63,7 +66,7 @@ export default function Following() {
 
         {/* Suggested Creators Cards Grid */}
         <div className={styles.suggestedGrid}>
-          {mockUsers.slice(0, 6).map((user) => (
+          {mockUsers.slice(0, 8).map((user) => (
             <div key={user.id} className={styles.suggestedCard}>
               <Link to={`/@${user.username}`} className={styles.cardAvatarLink}>
                 <img src={user.avatar} alt={user.nickname} className={styles.cardAvatar} />
@@ -93,6 +96,22 @@ export default function Following() {
 
   return (
     <div className={styles.followingContainer}>
+      {/* Stories / Reels Horizontal Bar at Top */}
+      <div className={styles.storiesBar}>
+        {followedCreators.map((creator) => (
+          <Link
+            key={creator.id}
+            to={`/@${creator.username}`}
+            className={styles.storyItem}
+          >
+            <div className={styles.storyAvatarRing}>
+              <img src={creator.avatar} alt={creator.nickname} className={styles.storyAvatar} />
+            </div>
+            <span className={styles.storyName}>{creator.nickname}</span>
+          </Link>
+        ))}
+      </div>
+
       <div className={`${styles.feedWrapper} ${openCommentVideoId ? styles.hasDrawer : ''}`}>
         {followingVideos.map((video, idx) => (
           <div

@@ -9,8 +9,10 @@ import {
   Share2,
   Volume2,
   VolumeX,
-  Smile,
-  CheckCircle2
+  CheckCircle2,
+  UserPlus,
+  UserCheck,
+  Tv
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { mockLiveStreams } from '../../data/mockData';
@@ -18,10 +20,11 @@ import { formatNumber } from '../../utils/formatters';
 import styles from './Live.module.css';
 
 export default function Live() {
-  const { getUserById, isMuted, toggleMute, showToast } = useApp();
+  const { getUserById, isMuted, toggleMute, showToast, isUserFollowed, toggleFollow } = useApp();
   const [currentStreamIndex, setCurrentStreamIndex] = useState(0);
   const stream = mockLiveStreams[currentStreamIndex] || mockLiveStreams[0];
   const host = getUserById(stream.userId);
+  const isFollowed = isUserFollowed(host.id);
 
   const [chatList, setChatList] = useState(stream.chatMessages);
   const [inputMsg, setInputMsg] = useState('');
@@ -30,13 +33,15 @@ export default function Live() {
   // Auto add simulated incoming chat messages
   useEffect(() => {
     const timer = setInterval(() => {
-      const sampleNames = ['Tuấn Kiệt', 'Hồng Ngọc', 'Quốc Bảo', 'Phương Thảo', 'Hải Yến'];
+      const sampleNames = ['Tuấn Kiệt', 'Hồng Ngọc', 'Quốc Bảo', 'Phương Thảo', 'Hải Yến', 'Minh Trí', 'Thanh Hằng'];
       const sampleTexts = [
         'Chào streamer nha! Chúc buổi tối vui vẻ ❤️',
-        'Livestream cuốn quá!',
+        'Livestream cuốn quá anh ơi!',
         'Anh hát bài nữa đi ạ!',
         'Thả tim rực rỡ nè 🔥🔥',
         'Share cho anh em cùng xem luôn!',
+        'Xem từ đầu tới giờ không rời mắt được',
+        'Tặng hoa hồng nè streamer 🌹🌹',
       ];
       const randomName = sampleNames[Math.floor(Math.random() * sampleNames.length)];
       const randomText = sampleTexts[Math.floor(Math.random() * sampleTexts.length)];
@@ -45,7 +50,7 @@ export default function Live() {
         ...prev.slice(-30),
         { id: Date.now(), user: randomName, text: randomText, time: 'Vừa xong' },
       ]);
-    }, 3500);
+    }, 3000);
 
     return () => clearInterval(timer);
   }, [currentStreamIndex]);
@@ -67,22 +72,22 @@ export default function Live() {
 
   const handleSendHeart = (e) => {
     confetti({
-      particleCount: 25,
-      spread: 60,
+      particleCount: 30,
+      spread: 70,
       origin: { y: 0.85, x: 0.8 },
-      colors: ['#FE2C55', '#25F4EE', '#FF69B4'],
+      colors: ['#FE2C55', '#25F4EE', '#FF69B4', '#FFD700'],
     });
-    showToast('Đã gửi tim cho người phát trực tiếp! ❤️');
+    showToast('Đã gửi bão tim cho LIVE! ❤️🔥');
   };
 
   const handleSendGift = () => {
     confetti({
-      particleCount: 50,
-      spread: 80,
+      particleCount: 60,
+      spread: 100,
       origin: { y: 0.8 },
-      colors: ['#FFD700', '#FFA500', '#FE2C55'],
+      colors: ['#FFD700', '#FFA500', '#FE2C55', '#25F4EE'],
     });
-    showToast('Đã gửi quà tặng Hoa hồng 🌹!');
+    showToast('Đã gửi quà tặng Vương miện lấp lánh 👑!');
   };
 
   return (
@@ -115,13 +120,38 @@ export default function Live() {
                   <span>{formatNumber(stream.viewersCount)} người xem</span>
                 </div>
               </div>
+
+              <button
+                className={`${styles.followHostBtn} ${isFollowed ? styles.followed : ''}`}
+                onClick={() => toggleFollow(host.id)}
+              >
+                {isFollowed ? 'Đang Follow' : 'Follow'}
+              </button>
             </div>
 
             <div className={styles.topRightControls}>
+              {/* Stream Switcher */}
+              <div className={styles.streamSwitcher}>
+                {mockLiveStreams.map((s, idx) => (
+                  <button
+                    key={s.id}
+                    className={`${styles.switchBtn} ${idx === currentStreamIndex ? styles.switchActive : ''}`}
+                    onClick={() => {
+                      setCurrentStreamIndex(idx);
+                      showToast(`Đã chuyển sang phòng LIVE của ${getUserById(s.userId).nickname}`);
+                    }}
+                  >
+                    <Tv size={12} />
+                    <span>Phòng {idx + 1}</span>
+                  </button>
+                ))}
+              </div>
+
               <div className={styles.liveTag}>
                 <Radio size={14} className={styles.livePulse} />
                 <span>LIVE</span>
               </div>
+
               <button className={styles.muteBtn} onClick={toggleMute} aria-label="Mute toggle">
                 {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
               </button>
@@ -176,7 +206,7 @@ export default function Live() {
           <form onSubmit={handleSendChat} className={styles.chatForm}>
             <input
               type="text"
-              placeholder="Gửi bình luận..."
+              placeholder="Gửi bình luận vào phòng LIVE..."
               value={inputMsg}
               onChange={(e) => setInputMsg(e.target.value)}
               className={styles.chatInput}

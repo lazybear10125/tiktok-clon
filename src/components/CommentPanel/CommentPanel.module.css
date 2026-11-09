@@ -152,6 +152,42 @@
   text-decoration: underline;
 }
 
+.deleteBtn {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  background: transparent;
+  padding: 0;
+}
+
+.deleteBtn:hover {
+  color: var(--primary);
+}
+
+.emojiRow {
+  display: flex;
+  gap: 8px;
+  padding: 8px 16px;
+  border-top: 1px solid var(--border-subtle);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.emojiBtn {
+  font-size: 18px;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: var(--radius-sm);
+  transition: transform var(--transition-fast);
+}
+
+.emojiBtn:hover {
+  transform: scale(1.25);
+}
+
 .likeBtn {
   display: flex;
   flex-direction: column;

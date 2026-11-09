@@ -15,10 +15,10 @@ export default function Profile() {
     allVideos,
     isVideoLiked,
     isVideoFavorited,
+    openVideoModal,
   } = useApp();
 
   const [activeTab, setActiveTab] = useState('videos'); // 'videos' | 'favorites' | 'liked'
-  const [selectedVideo, setSelectedVideo] = useState(null);
 
   // Find user by username
   const isMe = currentUser && currentUser.username === cleanUsername;
@@ -86,7 +86,7 @@ export default function Profile() {
               <div
                 key={video.id}
                 className={styles.gridItem}
-                onClick={() => setSelectedVideo(video)}
+                onClick={() => openVideoModal(video)}
               >
                 <div className={styles.videoThumbnailWrapper}>
                   <img src={video.coverUrl} alt={video.description} className={styles.thumbnail} />
@@ -103,46 +103,6 @@ export default function Profile() {
           </div>
         )}
       </div>
-
-      {/* Video Modal Popup when clicked in Profile */}
-      {selectedVideo && (
-        <div className={styles.modalBackdrop} onClick={() => setSelectedVideo(null)}>
-          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <div className={styles.modalVideoCol}>
-              <video
-                src={selectedVideo.videoUrl}
-                autoPlay
-                controls
-                loop
-                className={styles.modalVideo}
-              />
-            </div>
-            <div className={styles.modalInfoCol}>
-              <div className={styles.modalHeader}>
-                <div className={styles.modalAuthor}>
-                  <img src={targetUser.avatar} alt={targetUser.nickname} className={styles.modalAvatar} />
-                  <div>
-                    <strong>{targetUser.nickname}</strong>
-                    <span>@{targetUser.username}</span>
-                  </div>
-                </div>
-                <button className={styles.modalCloseBtn} onClick={() => setSelectedVideo(null)}>
-                  ✕
-                </button>
-              </div>
-
-              <div className={styles.modalBody}>
-                <p className={styles.modalCaption}>{selectedVideo.description}</p>
-                <div className={styles.modalMusic}>🎵 {selectedVideo.music}</div>
-                <div className={styles.modalStats}>
-                  <span>❤️ {formatNumber(selectedVideo.likesCount)} thích</span>
-                  <span>💬 {formatNumber(selectedVideo.commentsCount)} bình luận</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
