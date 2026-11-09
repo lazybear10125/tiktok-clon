@@ -1,0 +1,252 @@
+.searchWrapper {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  height: 44px;
+  background: var(--bg-input);
+  border-radius: var(--radius-full);
+  padding: 0 4px 0 16px;
+  border: 1.5px solid transparent;
+  transition: all var(--transition-fast);
+}
+
+.searchBox.active,
+.searchBox:focus-within {
+  border-color: var(--border-hover);
+  background: var(--bg-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.input {
+  flex: 1;
+  height: 100%;
+  font-size: 14px;
+  color: var(--text-primary);
+  background: transparent;
+  padding-right: 8px;
+}
+
+.input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.clearBtn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color var(--transition-fast);
+}
+
+.clearBtn:hover {
+  color: var(--text-primary);
+}
+
+.splitter {
+  width: 1px;
+  height: 24px;
+  background: var(--border-color);
+  margin: 0 4px;
+}
+
+.searchBtn {
+  width: 44px;
+  height: 38px;
+  border-radius: 0 var(--radius-full) var(--radius-full) 0;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.searchBtn:hover {
+  color: var(--text-primary);
+}
+
+/* Dropdown */
+.dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  z-index: var(--z-dropdown);
+  padding: 12px 0;
+  max-height: 480px;
+  overflow-y: auto;
+  animation: fadeIn 150ms ease-out;
+}
+
+.section {
+  padding: 6px 0;
+}
+
+.section + .section {
+  border-top: 1px solid var(--border-subtle);
+  margin-top: 6px;
+  padding-top: 10px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 16px 8px;
+}
+
+.sectionTitleGroup {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-secondary);
+}
+
+.sectionTitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.trendingIconColor {
+  color: var(--primary);
+}
+
+.clearAllBtn {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  cursor: pointer;
+}
+
+.clearAllBtn:hover {
+  color: var(--primary);
+}
+
+.historyList {
+  display: flex;
+  flex-direction: column;
+}
+
+.historyItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.historyItem:hover {
+  background: var(--bg-hover);
+}
+
+.historyClickable {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.historyIcon {
+  color: var(--text-tertiary);
+}
+
+.historyText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.deleteHistoryBtn {
+  color: var(--text-tertiary);
+  padding: 4px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.deleteHistoryBtn:hover {
+  color: var(--text-primary);
+  background: var(--bg-active);
+}
+
+.trendingGrid {
+  display: flex;
+  flex-direction: column;
+}
+
+.trendingBadge {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.trendingBadge:hover {
+  background: var(--bg-hover);
+}
+
+.trendingRank {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--primary);
+  width: 16px;
+}
+
+.trendingText {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.item:hover {
+  background: var(--bg-hover);
+}
+
+.itemIcon {
+  color: var(--text-tertiary);
+}
+
+.itemText {
+  flex: 1;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.itemArrow {
+  color: var(--text-tertiary);
+}

@@ -1,0 +1,27 @@
+.appWrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-primary);
+}
+
+.mainContainer {
+  display: flex;
+  flex: 1;
+  max-width: 1920px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.contentArea {
+  flex: 1;
+  min-width: 0;
+  min-height: calc(100vh - var(--header-height));
+  padding-bottom: 40px;
+}
+
+@media (max-width: 768px) {
+  .contentArea {
+    padding-bottom: calc(var(--bottom-nav-height) + 20px);
+  }
+}
